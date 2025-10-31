@@ -1,65 +1,98 @@
-import Image from "next/image";
+// ** Copyright Haoran Su, Boston University **
+"use client";
+import "@/app/globals.css";
 
-export default function Home() {
+import { useCallback, useRef, useState } from "react";
+import createGrid from "@/utility/Board";
+import Board from "@/app/Board";
+import { Cell } from "@/app/type";
+import Input from "@/utility/Input";
+import Game from "@/utility/Game";
+const Main = () => {
+  // we want define the board by ourselves,
+  // what do we need? A useState that holds the board
+
+  const [ready, setReady] = useState<boolean>(false);
+  const [grid, setGrid] = useState<Cell[][]>([]);
+  const [height, setHeight] = useState<number>(0);
+  const [width, setWidth] = useState<number>(0);
+  const [currentGame, setCurrentGame] = useState<Game | null>(null);
+  const gameidRef = useRef<number>(0);
+  console.log("currengameID", currentGame?.gameID);
+  const readyClicker = useCallback((difficulty: string) => {
+    switch (difficulty) {
+      case "Easy": {
+        setWidth(9);
+        setHeight(9);
+        setCurrentGame(new Game(`game-${++gameidRef.current}`, 71, "Easy"));
+        setGrid(createGrid(9, 9, 10));
+        setReady(true);
+        break;
+      }
+      case "Medium": {
+        setWidth(16);
+        setHeight(16);
+        setCurrentGame(new Game(`game-${++gameidRef.current}`, 216, "Medium"));
+        setGrid(createGrid(16, 16, 40));
+        setReady(true);
+        break;
+      }
+      case "Hard": {
+        setWidth(18);
+        setHeight(20);
+        setCurrentGame(new Game(`game-${++gameidRef.current}`, 310, "Hard"));
+        setGrid(createGrid(20, 18, 50));
+        setReady(true);
+        break;
+      }
+      case "Expert": {
+        setWidth(30);
+        setHeight(16);
+        setCurrentGame(new Game(`game-${++gameidRef.current}`, 381, "Expert"));
+        setGrid(createGrid(16, 30, 99));
+        setReady(true);
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  }, []);
+  const restartGame = useCallback(() => {
+    readyClicker(currentGame!.difficulty);
+  }, [currentGame, readyClicker]);
+
+  // ** test grid logic **
+  // for (let i = 0; i < grid.length; i++) {
+  //   for (let j = 0; j < grid[0].length; j++) {
+  //     console.log(`${grid[i][j].isMine}, ${grid[i][j].Mines} `);
+  //   }
+  //   console.log("\n");
+  // }
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex flex-col w-screen h-screen justify-center items-center gap-y-[20px]">
+      <div className="flex w-full h-[50px] flex-row justify-center items-center text-[40px] gap-x-[10px]">
+        <img src="/mine.png" className="h-full"></img>
+        <p className="font-titlefont text-title">MineSweeper</p>
+      </div>
+      {/*  my board setup */}
+      {!ready ? (
+        <div className="w-[30%] h-[70%] bg-green-500 rounded-3xl justify-center items-center flex">
+          <Input selectionCallback={readyClicker} />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      ) : (
+        <div className="w-full h-[70%] flex justify-center items-center">
+          <Board
+            key={currentGame!.gameID}
+            board={grid}
+            height={height}
+            width={width}
+            game={currentGame!}
+            restartCallback={restartGame}
+          />
         </div>
-      </main>
+      )}
     </div>
   );
-}
+};
+export default Main;
