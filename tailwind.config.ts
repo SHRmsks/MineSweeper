@@ -6,7 +6,7 @@ module.exports = {
     extend: {
       colors: {
         title: "#842A3B",
-        monkey: "#00FF00",
+        selection: "#63360c",
       },
       fontFamily: {
         titlefont: "titlefont",

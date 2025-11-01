@@ -1,4 +1,3 @@
-import { Difficulty } from "@/app/type";
 import { memo, useState } from "react";
 import Picker from "react-mobile-picker";
 
@@ -8,7 +7,7 @@ const Input = ({ selectionCallback }) => {
   };
   const [pickerValue, setPickerValue] = useState({ difficulty: "Easy" });
   return (
-    <div className="w-full h-fit gap-y-[20px] flex flex-col justify-center items-center p-[30px] font-selection ">
+    <div className="w-full h-fit gap-y-[20px] flex flex-col justify-center items-center text-[20px] font-selection text-selection">
       <p> Difficulty: </p>
       <Picker
         className="h-fit"
@@ -25,7 +24,7 @@ const Input = ({ selectionCallback }) => {
         </Picker.Column>
       </Picker>
       <button
-        className="w-[30%] h-fit p-[2px] bg-blue-500 rounded-3xl"
+        className="w-[30%] h-fit p-[2px] bg-button rounded-3xl"
         onClick={() => selectionCallback(pickerValue.difficulty)}
       >
         Play!!

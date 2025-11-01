@@ -71,13 +71,17 @@ const Main = () => {
   // }
   return (
     <div className="flex flex-col w-screen h-screen justify-center items-center gap-y-[20px]">
-      <div className="flex w-full h-[50px] flex-row justify-center items-center text-[40px] gap-x-[10px]">
-        <img src="/mine.png" className="h-full"></img>
+      <div className="flex w-full h-[50px]  flex-row justify-center items-center text-[40px] gap-x-[10px] ">
+        <img src="/mine.jpg" className="h-full"></img>
         <p className="font-titlefont text-title">MineSweeper</p>
       </div>
       {/*  my board setup */}
       {!ready ? (
-        <div className="w-[30%] h-[70%] bg-green-500 rounded-3xl justify-center items-center flex">
+        <div
+          className="relative w-[30%] h-[70%] 
+      justify-center items-center flex"
+        >
+          <div className="absolute rounded-3xl w-full h-full bg-[url('/theme.jpg')] opacity-60 bg-cover bg-no-repeat bg-center z-[-1]"></div>
           <Input selectionCallback={readyClicker} />
         </div>
       ) : (

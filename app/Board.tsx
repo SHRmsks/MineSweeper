@@ -10,6 +10,8 @@ import {
   SoilComponent,
 } from "@/utility/Cells";
 
+// This is the whole board component that should encapsulate every thing about the current game
+// It must self-sufficently manage the state of the board and trigger the re-rendering
 const Board = ({
   board,
   height,
@@ -178,7 +180,7 @@ const Board = ({
       </div>
       <div>
         <button
-          className="relative w-[200px] h-fit bg-blue-200 z-20"
+          className="relative w-[100px] font-selection text-selection bg-blue-200 z-20 rounded-3xl"
           onClick={restartCallback}
         >
           Restart
