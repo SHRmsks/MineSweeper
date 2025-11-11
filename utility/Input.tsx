@@ -24,7 +24,7 @@ const Input = ({ selectionCallback }) => {
         </Picker.Column>
       </Picker>
       <button
-        className="w-[30%] h-fit p-[2px] bg-button rounded-3xl"
+        className="w-[30%] h-fit py-[4px] bg-button rounded-3xl"
         onClick={() => selectionCallback(pickerValue.difficulty)}
       >
         Play!!

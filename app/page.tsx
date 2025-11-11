@@ -19,6 +19,7 @@ const Main = () => {
   const [currentGame, setCurrentGame] = useState<Game | null>(null);
   const gameidRef = useRef<number>(0);
   console.log("currengameID", currentGame?.gameID);
+
   const readyClicker = useCallback((difficulty: string) => {
     switch (difficulty) {
       case "Easy": {
@@ -38,10 +39,10 @@ const Main = () => {
         break;
       }
       case "Hard": {
-        setWidth(18);
-        setHeight(20);
-        setCurrentGame(new Game(`game-${++gameidRef.current}`, 310, "Hard"));
-        setGrid(createGrid(20, 18, 50));
+        setWidth(16);
+        setHeight(18);
+        setCurrentGame(new Game(`game-${++gameidRef.current}`, 238, "Hard"));
+        setGrid(createGrid(16, 18, 50));
         setReady(true);
         break;
       }
@@ -61,7 +62,18 @@ const Main = () => {
   const restartGame = useCallback(() => {
     readyClicker(currentGame!.difficulty);
   }, [currentGame, readyClicker]);
-
+  const nextLevelGame = useCallback(() => {
+    switch (currentGame!.difficulty) {
+      case "Easy":
+        readyClicker("Medium");
+      case "Medium":
+        readyClicker("Harder");
+      case "Harder":
+        readyClicker("Expert");
+      default:
+        return;
+    }
+  }, [currentGame, readyClicker]);
   // ** test grid logic **
   // for (let i = 0; i < grid.length; i++) {
   //   for (let j = 0; j < grid[0].length; j++) {
@@ -72,7 +84,7 @@ const Main = () => {
   return (
     <div className="flex flex-col w-screen h-screen justify-center items-center gap-y-[20px]">
       <div className="flex w-full h-[50px]  flex-row justify-center items-center text-[40px] gap-x-[10px] ">
-        <img src="/mine.jpg" className="h-full"></img>
+        <img src="/mine.png" className="h-full"></img>
         <p className="font-titlefont text-title">MineSweeper</p>
       </div>
       {/*  my board setup */}
@@ -85,7 +97,7 @@ const Main = () => {
           <Input selectionCallback={readyClicker} />
         </div>
       ) : (
-        <div className="w-full h-[70%] flex justify-center items-center">
+        <div className="w-ful flex justify-center items-center">
           <Board
             key={currentGame!.gameID}
             board={grid}
@@ -93,6 +105,7 @@ const Main = () => {
             width={width}
             game={currentGame!}
             restartCallback={restartGame}
+            nextLevelCallback={nextLevelGame}
           />
         </div>
       )}

@@ -21,11 +21,15 @@ const FlagComponent = ({
     </div>
   );
 };
+
+
 const MineComponent = () => {
   return (
-    <div className="bg-[url(/mine2.jpeg)] w-full h-full bg-cover bg-center bg-no-repeat"></div>
+    <div className="bg-[url(/mine2.png)] w-full h-full bg-cover bg-center bg-no-repeat"></div>
   );
 };
+
+
 const SoilComponent = ({ cell }: { cell: Cell }) => {
   return (
     <>
@@ -39,6 +43,7 @@ const SoilComponent = ({ cell }: { cell: Cell }) => {
     </>
   );
 };
+
 const CellComponent = ({ prop }: { prop: CellProps }) => {
   const { cell, cellModifier, flagModifier } = prop;
   const cellClick = (e: React.MouseEvent<HTMLButtonElement>) => {

@@ -2,13 +2,14 @@
 import BFS from "@/utility/BFS";
 import { Cell } from "./type";
 import Game from "@/utility/Game";
-import { useCallback, useRef, useState } from "react";
+import { memo, useCallback, useRef, useState } from "react";
 import {
   CellComponent,
   FlagComponent,
   MineComponent,
   SoilComponent,
 } from "@/utility/Cells";
+import { LoseBanner, RestartButton, WinBanner } from "@/utility/Banner";
 
 // This is the whole board component that should encapsulate every thing about the current game
 // It must self-sufficently manage the state of the board and trigger the re-rendering
@@ -18,12 +19,14 @@ const Board = ({
   width,
   game,
   restartCallback,
+  nextLevelCallback,
 }: {
   board: Cell[][];
   height: number;
   width: number;
   game: Game;
   restartCallback: () => void;
+  nextLevelCallback: () => void;
 }) => {
   // my board rendering logic
   const [win, setWin] = useState<boolean | null>(null);
@@ -122,30 +125,30 @@ const Board = ({
       });
     }
   }, []);
+
   return (
     <div className="relative w-full h-full flex flex-col justify-center items-center gap-y-[30px]">
       {win !== null && (
         <div className="absolute w-full h-full flex justify-center items-center z-10">
           {win ? (
-            <div className="bg-red-600 flex justify-center items-center w-[20%] h-[20%] rounded-3xl ">
-              <p>You win</p>
-            </div>
+            <WinBanner
+              restartCallback={restartCallback}
+              nextLevelCallback={nextLevelCallback}
+            />
           ) : (
-            <div className="bg-amber-800 flex justify-center items-center w-[20%] h-[20%] rounded-3xl">
-              <p>You lose</p>
-            </div>
+            <LoseBanner restartCallback={restartCallback} />
           )}
         </div>
       )}
-
       <div
-        className={`grid justify-center items-center gap-x-[3px]
-        gap-y-[3px] bg-gray-600 ${win !== null ? "opacity-50" : ""}`}
+        className={`grid justify-center items-center gap-x-[3px] rounded-2xl gap-y-[3px] bg-gray-600 ${
+          win !== null ? "opacity-50" : ""
+        } overflow-hidden`}
         style={{
-          gridTemplateRows: `repeat(${height}, 30px)`,
-          gridTemplateColumns: `repeat(${width}, 30px)`,
-          height: `${height * 30 + 3 * (height - 1)}px`,
-          width: `${width * 30 + 3 * (width - 1)}px`,
+          gridTemplateRows: `repeat(${height}, 40px)`,
+          gridTemplateColumns: `repeat(${width}, 40px)`,
+          height: `${height * 40 + 3 * (height - 1)}px`,
+          width: `${width * 40 + 3 * (width - 1)}px`,
         }}
       >
         {boardState.map((row, rowIndex) => {
@@ -178,15 +181,8 @@ const Board = ({
           });
         })}
       </div>
-      <div>
-        <button
-          className="relative w-[100px] font-selection text-selection bg-blue-200 z-20 rounded-3xl"
-          onClick={restartCallback}
-        >
-          Restart
-        </button>
-      </div>
+      {win == null ? <RestartButton restartCallback={restartCallback} /> : null}
     </div>
   );
 };
-export default Board;
+export default memo(Board);
